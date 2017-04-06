@@ -3,7 +3,7 @@ require "time"
 module Elk
   # Used to send SMS through 46elks SMS-gateway
   class SMS
-    attr_reader :from, :to, :message, :message_id, :created_at,
+    attr_reader :from, :to, :message, :image, :message_id, :created_at,
                 :loaded_at, :direction, :status, :client #:nodoc:
 
     def initialize(parameters) #:nodoc:
@@ -14,6 +14,7 @@ module Elk
       @from       = parameters[:from]
       @to         = parameters[:to]
       @message    = parameters[:message]
+      @image      = parameters[:image]
       @message_id = parameters[:id]
       @created_at = Time.parse(parameters[:created]) if parameters[:created]
       @loaded_at  = Time.now
@@ -62,9 +63,14 @@ module Elk
           arguments[:whendelivered] = parameters.fetch(:whendelivered)
         end
 
+        if parameters.key?(:image)
+          arguments[:image] = parameters.fetch(:image)
+        end
+
         check_sender_limit(arguments[:from])
 
-        response = client.post("/SMS", arguments)
+        endpoint = parameters.key?(:image) ? "/MMS" : "/SMS"
+        response = client.post(endpoint, arguments)
         parsed_response = Elk::Util.parse_json(response.body)
 
         if multiple_recipients?(arguments[:to])
