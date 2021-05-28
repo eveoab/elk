@@ -23,7 +23,7 @@ spec = Gem::Specification.new do |s|
   s.required_ruby_version = ">= 1.9.3"
 
   # elk dependencies
-  s.add_dependency("rest-client", "~> 1.6")
+  s.add_dependency("rest-client", "~> 2.0")
 
   # Tests
   s.add_development_dependency("rake", "~> 10.0")
